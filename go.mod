@@ -1,6 +1,6 @@
 module github.com/step-security/render-template
 
-go 1.21
+go 1.24
 
 require (
 	github.com/caarlos0/env/v10 v10.0.0
