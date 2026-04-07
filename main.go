@@ -62,13 +62,13 @@ func validateSubscription() {
 	fmt.Println()
 	fmt.Println("\x1b[1;36mStepSecurity Maintained Action\x1b[0m")
 	fmt.Printf("Secure drop-in replacement for %s\n", upstream)
-	if repoPrivate != nil && *repoPrivate == false {
+	if repoPrivate != nil && !*repoPrivate {
 		fmt.Println("\x1b[32m\u2713 Free for public repositories\x1b[0m")
 	}
 	fmt.Printf("\x1b[36mLearn more:\x1b[0m %s\n", docsURL)
 	fmt.Println()
 
-	if repoPrivate != nil && *repoPrivate == false {
+	if repoPrivate != nil && !*repoPrivate {
 		return
 	}
 
