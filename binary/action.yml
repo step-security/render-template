@@ -1,0 +1,89 @@
+name: Render Template (binary)
+description: Renders file based on template and passed variables (uses pre-compiled binary, no Docker required)
+
+author: Konstantin Chukhlomin <mail@chuhlomin.com>
+
+branding:
+  icon: file-text
+  color: purple
+
+inputs:
+  template:
+    description: Path to template
+    required: true
+
+  vars:
+    description: Variables to use in template
+    required: false
+
+  vars_path:
+    description: Path to YAML file with variables
+    required: false
+
+  result_path:
+    description: Desired path to result file (optional)
+    required: false
+
+  timezone:
+    description: Timezone to use in `date` template function
+    required: false
+
+outputs:
+  result:
+    description: Rendered file content
+    value: ${{ steps.run.outputs.result }}
+
+runs:
+  using: composite
+  steps:
+    - name: Download binary
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+        ACTION_REPO: ${{ github.action_repository }}
+        ACTION_REF: ${{ github.action_ref }}
+      run: |
+        OS=$(echo "${{ runner.os }}" | tr '[:upper:]' '[:lower:]')
+        [ "$OS" = "macos" ] && OS="darwin"
+        ARCH=$(echo "${{ runner.arch }}" | tr '[:upper:]' '[:lower:]')
+        [ "$ARCH" = "x64" ] && ARCH="amd64"
+        [ "$ARCH" = "arm" ] && ARCH="armv7"
+        EXT=""
+        [ "$OS" = "windows" ] && EXT=".exe"
+        BINARY="render-template_${OS}_${ARCH}${EXT}"
+        REPO="${ACTION_REPO:-chuhlomin/render-template}"
+        DEST="$RUNNER_TEMP/render-template"
+        mkdir -p "$DEST"
+        echo "Downloading ${BINARY} from ${REPO}@${ACTION_REF}"
+        if ! gh release download "${ACTION_REF}" \
+          --repo "${REPO}" \
+          --pattern "$BINARY" \
+          --dir "$DEST" 2>/dev/null; then
+          echo "'${ACTION_REF}' is not a release tag, resolving to latest '${ACTION_REF}.*'"
+          RESOLVED_TAG="$(gh release list \
+            --repo "${REPO}" \
+            --json tagName \
+            --jq "first(.[] | select(.tagName | startswith(\"${ACTION_REF}.\"))) | .tagName")"
+          [ -z "$RESOLVED_TAG" ] && echo "::error::No release found matching '${ACTION_REF}.*'" && exit 1
+          echo "Resolved to ${RESOLVED_TAG}"
+          if ! gh release download "${RESOLVED_TAG}" \
+            --repo "${REPO}" \
+            --pattern "$BINARY" \
+            --dir "$DEST"; then
+            echo "::error::No asset '${BINARY}' found in release '${RESOLVED_TAG}'"
+            exit 1
+          fi
+        fi
+        [ "$OS" != "windows" ] && chmod +x "$DEST/$BINARY"
+        echo "RENDER_TEMPLATE_BIN=$DEST/$BINARY" >> "$GITHUB_ENV"
+
+    - name: Run
+      id: run
+      shell: bash
+      env:
+        INPUT_TEMPLATE: ${{ inputs.template }}
+        INPUT_VARS: ${{ inputs.vars }}
+        INPUT_VARS_PATH: ${{ inputs.vars_path }}
+        INPUT_RESULT_PATH: ${{ inputs.result_path }}
+        INPUT_TIMEZONE: ${{ inputs.timezone }}
+      run: "${{ env.RENDER_TEMPLATE_BIN }}"
