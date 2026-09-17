@@ -1,7 +1,7 @@
 name: Render Template (binary)
 description: Renders file based on template and passed variables (uses pre-compiled binary, no Docker required)
 
-author: Konstantin Chukhlomin <mail@chuhlomin.com>
+author: step-security
 
 branding:
   icon: file-text

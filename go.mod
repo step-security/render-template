@@ -1,4 +1,4 @@
-module github.com/chuhlomin/render-template
+module github.com/step-security/render-template
 
 go 1.21
 

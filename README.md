@@ -1,8 +1,6 @@
 # Render Template
 
-[![main](https://github.com/chuhlomin/render-template/actions/workflows/main.yml/badge.svg)](https://github.com/chuhlomin/render-template/actions/workflows/main.yml)
-[![release](https://github.com/chuhlomin/render-template/actions/workflows/release.yml/badge.svg)](https://github.com/chuhlomin/render-template/actions/workflows/release.yml)
-[![DockerHub](https://img.shields.io/badge/docker-hub-4988CC)](https://hub.docker.com/repository/docker/chuhlomin/render-template)
+[![main](https://github.com/step-security/render-template/actions/workflows/main.yml/badge.svg)](https://github.com/step-security/render-template/actions/workflows/main.yml)
 
 GitHub Action to render file based on template and passed variables.
 
@@ -94,13 +92,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
 
       <...>
 
       - name: Render template
         id: render_template
-        uses: chuhlomin/render-template@v1
+        uses: step-security/render-template@v1
         with:
           template: kube.template.yml
           vars: |

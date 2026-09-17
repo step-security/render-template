@@ -1,7 +1,7 @@
 name: Render Template
 description: Renders file based on template and passed variables
 
-author: Konstantin Chukhlomin <mail@chuhlomin.com>
+author: step-security
 
 branding:
   icon: file-text
