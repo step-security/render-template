@@ -96,7 +96,7 @@ func validateSubscription() {
 		fmt.Println("Timeout or API not reachable. Continuing to next step.")
 		return
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	if resp.StatusCode == http.StatusForbidden {
 		fmt.Printf("::error::\x1b[1;31mThis action requires a StepSecurity subscription for private repositories.\x1b[0m\n")
@@ -257,7 +257,7 @@ func renderTemplate(templateFilePath string, vars vars) (string, error) {
 	return result.String(), nil
 }
 
-func writeOutput(output string) error {
+func writeOutput(output string) (retErr error) {
 	githubOutput := formatOutput("result", output)
 	if githubOutput == "" {
 		return nil
@@ -275,7 +275,11 @@ func writeOutput(output string) error {
 			err,
 		)
 	}
-	defer f.Close()
+	defer func() {
+		if cerr := f.Close(); cerr != nil && retErr == nil {
+			retErr = fmt.Errorf("failed to close result file %q: %w", path, cerr)
+		}
+	}()
 
 	if _, err = f.WriteString(githubOutput); err != nil {
 		return fmt.Errorf("failed to write result to file %q: %w", path, err)
