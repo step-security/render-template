@@ -1,3 +1,5 @@
+[![StepSecurity Maintained Action](https://raw.githubusercontent.com/step-security/maintained-actions-assets/main/assets/maintained-action-banner.png)](https://docs.stepsecurity.io/actions/stepsecurity-maintained-actions)
+
 # Render Template
 
 [![main](https://github.com/step-security/render-template/actions/workflows/main.yml/badge.svg)](https://github.com/step-security/render-template/actions/workflows/main.yml)
