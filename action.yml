@@ -34,5 +34,5 @@ outputs:
 
 runs:
   using: 'docker'
-  image: 'docker://ghcr.io/step-security/render-template:v1.10.0@sha256:9c1fc91677928a9f3a4fe0a8eb1a218ca40be178e7c5a4871d754022a54b4c59' #v1.10.0
+  image: 'docker://ghcr.io/step-security/render-template:v1.12.0@sha256:4504d7c7a8ce71dc568def6b70b8b33a877fc7c93fc4f5dd3688bd5cb0e95ef7' #v1.12.0
   
